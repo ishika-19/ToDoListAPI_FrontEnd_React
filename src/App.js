@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useState, useEffect } from 'react'
+import "./App.css"
+import ToDoInput from './components/ToDoInput'
+import Todolist from './components/ToDoList';
+import axios from 'axios';
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const [listToDo, setListTodo] = useState([]);
+const [todos, setTodos] = useState([]);
+useEffect(() => {
+  const fetchTodos = async () => {
+      try {
+          const response = await axios.get('http://127.0.0.1:8000/todos');
+          setTodos(response.data);
+          console.log(response.data);
+      } catch (error) {
+          console.error('Error fetching todos:', error);
+      }
+  };
 
-export default App;
+fetchTodos();
+}, []);
+
+  let addList = (inputText)=>{
+    if(inputText!=='')
+    setListTodo([...listToDo, inputText])
+    setListTodo([...listToDo, inputText]);
+  }
+ 
+return(
+  <div className="main-container">
+    <div className="center-container">
+     <ToDoInput addList = {addList}/>
+     <h1 className="app-heading">TODO</h1>
+     <hr/>
+        <Todolist item = {todos}/> 
+    </div>
+  </div>
+)
+}
+export default App
